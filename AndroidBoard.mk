@@ -3,7 +3,7 @@ include $(CLEAR_VARS)
 
 TARGET_KERNEL_CONFIG := cyanogenmod_stingray_defconfig
 
-TARGET_KERNEL_SOURCE := kernel/moto/stingray
+TARGET_KERNEL_SOURCE := kernel/moto/wingray
 
 ifeq ($(TARGET_PREBUILT_KERNEL),)
 TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/kernel
