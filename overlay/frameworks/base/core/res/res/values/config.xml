@@ -20,9 +20,8 @@
 <!-- These resources are around just to allow their values to be customized
      for different hardware and product builds. -->
 <resources>
-    <string name="config_datause_iface">wlan0</string>
-
-    <bool name="config_allowAllRotations">true</bool>
+    <!-- Software blur is too slow on this device. -->
+    <bool name="config_sf_slowBlur">true</bool>
 
     <!-- XXXXX NOTE THE FOLLOWING RESOURCES USE THE WRONG NAMING CONVENTION.
          Please don't copy them, copy anything else. -->
@@ -170,6 +169,9 @@
     <!-- This device does not allow sms service. -->
     <bool name="config_sms_capable">false</bool>
 
+    <!-- Enable puk unlockscreen -->
+    <bool name="config_enable_puk_unlock_screen">true</bool>
+
     <!-- Max space (in MB) allocated to DownloadManager to store the downloaded files
          if they are to be stored in DownloadManager's data dir,
          which typically is /data/data/com.android.providers.downloads/files. -->
@@ -177,6 +179,7 @@
 
     <!-- Is the notification LED intrusive? Used to decide if there should be a disable option -->
     <bool name="config_intrusiveNotificationLed">true</bool>
+
 
     <!-- Base "touch slop" value used by ViewConfiguration as a
          movement threshold where scrolling should begin.
