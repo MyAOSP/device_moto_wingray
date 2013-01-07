@@ -71,7 +71,8 @@ PRODUCT_COPY_FILES += \
         device/moto/wingray/stingray-keypad.kcm:system/usr/keychars/stingray-keypad.kcm
 
 PRODUCT_COPY_FILES += \
-        device/moto/wingray/libaudio/audio_policy.conf:system/etc/audio_policy.conf
+        device/moto/wingray/libaudio/audio_policy.conf:system/etc/audio_policy.conf \
+        device/moto/wingray/audio_effects.conf:system/vendor/etc/audio_effects.conf
 
 PRODUCT_PACKAGES := \
     camera.stingray \
@@ -87,9 +88,11 @@ PRODUCT_PACKAGES := \
     l2ping \
     hcitool \
     bttest \
+    libnetcmdiface \
     com.android.future.usb.accessory \
     whisperd \
     Torch \
+    LiveWallpapersPicker \
     StingrayParts
 
 PRODUCT_CHARACTERISTICS := tablet
@@ -124,3 +127,5 @@ endif
 
 WIFI_BAND := 802_11_ABG
 $(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/firmware/bcm4329/device-bcm.mk)
+
+$(call inherit-product-if-exists, framework/base/data/videos/VideoPackage2.mk)

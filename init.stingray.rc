@@ -1,25 +1,30 @@
 import init.stingray.usb.rc
 
-on early-init
-    mount debugfs debugfs /sys/kernel/debug
-
-    # EXTERNAL_STORAGE and SECONDARY_STORAGE are needed for sqlite3 _DELETE_FILE trigger
-    export EXTERNAL_STORAGE /storage/sdcard0
-    export SECONDARY_STORAGE /storage/sdcard1
-    mkdir /storage 0050 system sdcard_r
-    mkdir /storage/sdcard0 0000 system system
+on init
+    mkdir /mnt/shell/emulated 0700 shell shell
+    mkdir /storage 0550 system sdcard_r
+    mkdir /storage/emulated 0555 root root
     mkdir /storage/sdcard1 0000 system system
-    mkdir /storage/usbdisk 0000 system system
+    mkdir /storage/usbdisk0 0000 system system
+
+    export EXTERNAL_STORAGE /storage/emulated/legacy
+    export SECONDARY_STORAGE /storage/sdcard1
+    export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
+    export EMULATED_STORAGE_TARGET /storage/emulated
+
     # for backwards compatibility
-    symlink /storage/sdcard0 /sdcard
-    symlink /storage/sdcard0 /mnt/sdcard
+    symlink /storage/emulated/legacy /sdcard
+    symlink /storage/emulated/legacy /mnt/sdcard
+    symlink /storage/emulated/legacy /storage/sdcard0
+    symlink /mnt/shell/emulated/0 /storage/emulated/legacy
     symlink /storage/sdcard1 /mnt/external1
-    symlink /storage/usbdisk /mnt/usbdisk
+    symlink /storage/usbdisk0 /mnt/usbdisk
     mkdir /pds 0777 system system
 
 on fs
     mount_all /fstab.stingray
     setprop ro.crypto.fuse_sdcard true
+    mount debugfs debugfs /sys/kernel/debug
 
 on post-fs-data
     mkdir /data/misc/wifi 0770 wifi wifi
@@ -60,16 +65,16 @@ on post-fs-data
 on boot
 # bluetooth
     # power up/down interface
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
+    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
+    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
     chmod 0660                /sys/class/rfkill/rfkill0/state
 
     # UART device
-    chown bluetooth bluetooth /dev/ttyHS2
+    chown bluetooth net_bt_stack /dev/ttyHS2
     chmod 0660                /dev/ttyHS2
 
     # bluetooth MAC address programming
-    chown bluetooth bluetooth /sys/module/board_stingray/parameters/bdaddr
+    chown bluetooth net_bt_stack /sys/module/board_stingray/parameters/bdaddr
     setprop ro.bt.bdaddr_path /sys/module/board_stingray/parameters/bdaddr
 
 # Sensor
@@ -139,10 +144,10 @@ on boot
 
 # StingrayParts: Control charging LED
     chown root system /sys/class/gpio/gpio168/value
-    chmod 0664 /sys/class/gpio/gpio168/value
+    chmod 664 /sys/class/gpio/gpio168/value
 
 # Power Management Settings
-    #write /sys/devices/platform/ohci.0/usb2/2-3/power/level auto
+    # cpufreq defaults
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 216000
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1000000
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
@@ -153,6 +158,8 @@ on boot
     write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 20000
     write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 80000
     write /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 80
+    write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 20000
+    write /sys/devices/system/cpu/cpufreq/interactive/input_boost 1
     # Wakelock debug
     write /sys/module/wakelock/parameters/debug_mask 7
     # No need to continuously scan w1 bus
@@ -232,14 +239,6 @@ service bugreport /system/bin/bugmailer.sh -b /system/media/audio/ui/Dock.ogg -e
     oneshot
     keycodes 115 114
 
-service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
-    --baudrate 3000000 --use_baudrate_for_download --scopcm 0,2,0,0,0,0,0,0,0,0 \
-    --patchram /etc/firmware/bcm4329.hcd /dev/ttyHS2
-    class main
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
-
 service location /system/bin/location
     class late_start
     socket gpshal_socket stream 660 radio system
@@ -272,7 +271,7 @@ service whisper /system/bin/whisperd
 # create virtual SD card at /storage/sdcard0, based on the /data/media directory
 # daemon will drop to user/group system/media_rw after initializing
 # underlying files in /data/media will be created with user and group media_rw (1023)
-service sdcard /system/bin/sdcard /data/media 1023 1023
+service sdcard /system/bin/sdcard /data/media /mnt/shell/emulated 1023 1023
     class late_start
 
 service motolocation /system/bin/sh /system/bin/am startservice -n com.motorola.android.locationproxy/com.motorola.android.locationproxy.LocationProxyService
