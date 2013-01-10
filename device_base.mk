@@ -81,11 +81,13 @@ PRODUCT_PACKAGES := \
     audio.a2dp.default \
     audio.usb.default \
     audio_policy.stingray \
+    power.stingray \
     librs_jni \
     make_ext4fs \
     l2ping \
     hcitool \
     bttest \
+    libnetcmdiface \
     com.android.future.usb.accessory \
     whisperd \
     Torch \
