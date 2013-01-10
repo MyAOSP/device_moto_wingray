@@ -120,9 +120,10 @@ PRODUCT_COPY_FILES += \
 
 # inherit from the non-open-source side, if present
 ifneq ($(filter trygon trygon_l10n calgon full_stingray tyranid stingray baked_stingray,$(TARGET_PRODUCT)),)
-$(call inherit-product-if-exists, vendor/moto/stingray/stingray-vendor.mk)
+$(call inherit-product, vendor/moto/stingray/stingray-vendor.mk)
+$(call inherit-product, vendor/verizon/device-verizon.mk)
 else
-$(call inherit-product-if-exists, vendor/moto/stingray/wingray-vendor.mk)
+$(call inherit-product, vendor/moto/stingray/wingray-vendor.mk)
 endif
 
 WIFI_BAND := 802_11_ABG
