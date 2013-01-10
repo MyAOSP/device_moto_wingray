@@ -71,8 +71,7 @@ PRODUCT_COPY_FILES += \
         device/moto/wingray/stingray-keypad.kcm:system/usr/keychars/stingray-keypad.kcm
 
 PRODUCT_COPY_FILES += \
-        device/moto/wingray/libaudio/audio_policy.conf:system/etc/audio_policy.conf \
-        device/moto/wingray/audio_effects.conf:system/vendor/etc/audio_effects.conf
+        device/moto/wingray/libaudio/audio_policy.conf:system/etc/audio_policy.conf
 
 PRODUCT_PACKAGES := \
     camera.stingray \
@@ -82,13 +81,11 @@ PRODUCT_PACKAGES := \
     audio.a2dp.default \
     audio.usb.default \
     audio_policy.stingray \
-    power.stingray \
     librs_jni \
     make_ext4fs \
     l2ping \
     hcitool \
     bttest \
-    libnetcmdiface \
     com.android.future.usb.accessory \
     whisperd \
     Torch \
