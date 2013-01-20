@@ -1,7 +1,7 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-TARGET_KERNEL_CONFIG := stingray_defconfig
+TARGET_KERNEL_CONFIG := cyanogenmod_stingray_defconfig
 
 TARGET_KERNEL_SOURCE := kernel/moto/wingray
 
